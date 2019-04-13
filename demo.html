@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>俄罗斯方块</title>
+</head>
+<body>
+	<b>目前功能：</b>
+	<p>不能变换，随机产生图形，满行消除，加一分</p>
+	<p>除了图形不能变换，都可以了</p>
+	<canvas id="myCanvas" width="480" height="600" style="border:1px solid #d3d3d3;">
+	您的浏览器不支持 HTML5 canvas 标签。
+	</canvas>
+
+	<script>
+		let c=document.getElementById("myCanvas");
+		let ctx=c.getContext("2d");
+		// let x = y =0;
+		let arr = [];
+		let x1=7;
+		let y1=0;
+		let x2=7;
+		let y2=1;
+		let x3=8;
+		let y3=0;
+		let x4=8;
+		let y4=1;
+		ctx.fillStyle="#F0F";
+		// ctx.fillRect(x,y,30,30);
+		ctx.fillRect(x1*30,y1*30,30,30);
+		ctx.fillRect(x2*30,y2*30,30,30);
+		ctx.fillRect(x3*30,y3*30,30,30);
+		ctx.fillRect(x4*30,y4*30,30,30);
+		let row = [];//记录每行个数；
+		row.length = 20;
+		for (let i = 0; i < row.length; i++) {
+			row[i] = 0;
+		}
+		console.log(row);
+
+		
+		let check = function(x1,y1,x2,y2,x3,y3,x4,y4){
+			console.log([x1,y1]);
+			console.log([x2,y2]);
+			console.log([x3,y3]);
+			console.log([x4,y4]);
+			let bool =arr.some(function(e){
+	   			return ((e[0] == x1&&e[1] == y1)||(e[0] == x2&&e[1] == y2)||(e[0] == x3&&e[1] == y3)||(e[0] == x4&&e[1] == y4));//如果存在，则不执行移动
+			});
+			return bool;
+		}
+		let checkDel = function(y){//在数组中将满行的消除
+			for(let i=0;i<arr.length;i++){
+			    if(arr[i][1]==y){//消除
+			    	ctx.clearRect(arr[i][0]*30,arr[i][1]*30,30,30);
+			        arr.splice(i,1);
+			        i--;
+			    }else if(arr[i][1]<y){//上面的下落，数据记录
+			    	arr[i][1]+=1;//y值全部加一，存入数组
+			    }
+			}
+			for (let i = row.length-1; i > 0; i--) {//从后边开始遍历
+				if (i<=y) {//索引值比y小的，说明在消去行的上方，进行下移
+					console.log(row);
+	    			row[i] = row[i-1];
+	    		}
+			}
+			ctx.clearRect(0,0,480,600);
+			// for (let i = 0; i < arr.length; i++) {
+			// 	// if (arr[i][1]<=y) {
+			// 		ctx.fillStyle="#F0F";//填充颜色
+			// 		ctx.fillRect(arr[i][0]*30,arr[i][1]*30,30,30);
+			// 	// }
+				
+			// }
+
+			console.log(arr);
+		}
+		
+
+
+		document.onkeydown=function(event){
+           let e = event || window.event || arguments.callee.caller.arguments[0];
+            if(e && e.keyCode==37&&x1>0&&x2>0&&x3>0&&x4>0){ // 按 left 
+				if(!check(x1-1,y1,x2-1,y2,x3-1,y3,x4-1,y4)&&x1>0&&x2>0&&x3>0&&x4>0){//下面没有块，或者下边不是边框，下降
+            		ctx.clearRect(x1*30,y1*30,30,30);
+            		ctx.clearRect(x2*30,y2*30,30,30);
+            		ctx.clearRect(x3*30,y3*30,30,30);
+            		ctx.clearRect(x4*30,y4*30,30,30);
+	                ctx.fillStyle="#F0F";
+	                x1-=1;
+	                x2-=1;
+	                x3-=1;
+	                x4-=1;
+					ctx.fillRect(x1*30,y1*30,30,30);
+					ctx.fillRect(x2*30,y2*30,30,30);
+					ctx.fillRect(x3*30,y3*30,30,30);
+					ctx.fillRect(x4*30,y4*30,30,30);
+            	}
+              }
+            if(e && e.keyCode==38&&y>0){ // 按 up 
+            	if(!check(x,y-1)){
+	            	ctx.clearRect(x*30,y*30,30,30);
+	                ctx.fillStyle="#F0F";
+	                y-=1;
+					ctx.fillRect(x*30,y*30,30,30);
+				}
+               }
+            if(e && e.keyCode==39&&x1<15&&x2<15&&x3<15&&x4<15){ // 按 right
+    //         	if(!check(x+1,y)){
+	   //          	ctx.clearRect(x*30,y*30,30,30);
+	   //              ctx.fillStyle="#F0F";
+	   //              x+=1;
+				// 	ctx.fillRect(x*30,y*30,30,30);
+				// }
+    //           }
+              if(!check(x1+1,y1,x2+1,y2,x3+1,y3,x4+1,y4)&&x1<16&&x2<16&&x3<16&&x4<16){//下面没有块，或者下边不是边框，下降
+            		ctx.clearRect(x1*30,y1*30,30,30);
+            		ctx.clearRect(x2*30,y2*30,30,30);
+            		ctx.clearRect(x3*30,y3*30,30,30);
+            		ctx.clearRect(x4*30,y4*30,30,30);
+	                ctx.fillStyle="#F0F";
+	                x1+=1;
+	                x2+=1;
+	                x3+=1;
+	                x4+=1;
+					ctx.fillRect(x1*30,y1*30,30,30);
+					ctx.fillRect(x2*30,y2*30,30,30);
+					ctx.fillRect(x3*30,y3*30,30,30);
+					ctx.fillRect(x4*30,y4*30,30,30);
+            	}
+              }
+            if(e && e.keyCode==40){ // 按 down
+            	console.log(x1,y1,x2,y2,x3,y3,x4,y4)
+            	if(!check(x1,y1+1,x2,y2+1,x3,y3+1,x4,y4+1)&&y1<19&&y2<19&&y3<19&&y4<19){//下面没有块，或者下边不是边框，下降
+            		ctx.clearRect(x1*30,y1*30,30,30);
+            		ctx.clearRect(x2*30,y2*30,30,30);
+            		ctx.clearRect(x3*30,y3*30,30,30);
+            		ctx.clearRect(x4*30,y4*30,30,30);
+	                ctx.fillStyle="#F0F";
+	                y1+=1;
+	                y2+=1;
+	                y3+=1;
+	                y4+=1;
+					ctx.fillRect(x1*30,y1*30,30,30);
+					ctx.fillRect(x2*30,y2*30,30,30);
+					ctx.fillRect(x3*30,y3*30,30,30);
+					ctx.fillRect(x4*30,y4*30,30,30);
+            	}else if(check(x1,y1+1,x2,y2+1,x3,y3+1,x4,y4+1)||y1==19||y2==19||y3==19||y4==19){//如果遇到底边框或遇到下面有块，则处理数据并产生新块
+            		//产生新块之前，先push保存
+					arr.push([x1,y1]);
+					arr.push([x2,y2]);
+					arr.push([x3,y3]);
+					arr.push([x4,y4]);
+
+            		row[y1]+=1;
+					row[y2]+=1;
+					row[y3]+=1;
+					row[y4]+=1;//记录下来每行的个数
+            		if(row[y1] == 16) {//判断是否可以消除，加分
+						checkDel(y1);
+						console.log(arr);
+						console.log(row);
+						alert("加一分")
+					}
+					if(row[y2] == 16) {//判断是否可以消除，加分
+						checkDel(y2);
+						console.log(arr);
+						console.log(row);
+						alert("加一分")
+					}
+					if(row[y3] == 16) {//判断是否可以消除，加分
+						checkDel(y3);
+						console.log(arr);
+						console.log(row);
+						alert("加一分")
+					}
+					if(row[y4] == 16) {//判断是否可以消除，加分
+						checkDel(y4);
+						console.log(arr);
+						console.log(row);
+						alert("加一分")
+					}
+					for (let i = 0; i < arr.length; i++) {//重新绘制
+						// if (arr[i][1]<=y) {
+							ctx.fillStyle="#F0F";//填充颜色
+							ctx.fillRect(arr[i][0]*30,arr[i][1]*30,30,30);
+						// }
+						
+					}
+					// 产生新块赋值
+
+					let ranN = Math.random();
+					ranN = parseInt(4*ranN+1);
+					if(ranN ==1){
+						x1=7;
+						y1=0;
+						x2=7;
+						y2=1;
+						x3=8;
+						y3=0;
+						x4=8;
+						y4=1;//方块
+					}else if(ranN == 2){
+						x1=7;
+						y1=0;
+						x2=7;
+						y2=1;
+						x3=8;
+						y3=1;
+						x4=9;
+						y4=1;
+					}else if(ranN == 3){
+						x1=7;
+						y1=0;
+						x2=6;
+						y2=1;
+						x3=7;
+						y3=1;
+						x4=8;
+						y4=1;
+					}else if(ranN == 4){
+						x1=6;
+						y1=0;
+						x2=7;
+						y2=0;
+						x3=8;
+						y3=0;
+						x4=9;
+						y4=0;
+					}
+            		
+					// 绘制
+					ctx.fillStyle="#F0F";
+		            ctx.fillRect(x1*30,y1*30,30,30);
+					ctx.fillRect(x2*30,y2*30,30,30);
+					ctx.fillRect(x3*30,y3*30,30,30);
+					ctx.fillRect(x4*30,y4*30,30,30);
+					console.log(arr);
+					console.log(row);
+				}
+              	
+               }
+
+            if(e && e.keyCode==13){ // 按 enter产生新的块
+            	if(!check(0,0)){
+		            ctx.fillStyle="#F0F";
+		            ctx.fillRect(x1*30,y1*30,30,30);
+					ctx.fillRect(x2*30,y2*30,30,30);
+					ctx.fillRect(x3*30,y3*30,30,30);
+					ctx.fillRect(x4*30,y4*30,30,30);
+					// ctx.fillRect(7*30,0,30,30);
+					// ctx.fillRect(7*30,1*30,30,30);
+					// ctx.fillRect(8*30,0,30,30);
+					// ctx.fillRect(8*30,1*30,30,30);//方块
+					/*ctx.fillRect(7,0
+					ctx.fillRect(7,1
+					ctx.fillRect(8,1,9,1*///L型
+					/*ctx.fillRect(7*30,0,30,30);
+					ctx.fillRect(6*30,1*30,30,30);
+					ctx.fillRect(7*30,1*30,30,30);
+					ctx.fillRect(8*30,1*30,30,30);*///T型
+					/*ctx.fillRect(6*30,0,30,30);
+					ctx.fillRect(7*30,0,30,30);
+					ctx.fillRect(8*30,0,30,30);
+					ctx.fillRect(9*30,0,30,30);*///I型
+					arr.push([x1,y1]);
+					arr.push([x2,y2]);
+					arr.push([x3,y3]);
+					arr.push([x4,y4]);
+					console.log(arr);
+					x1=7;
+					y1=0;
+					x2=7;
+					y2=1;
+					x3=8;
+					y3=0;
+					x4=8;
+					y4=1;//方块
+				}
+	          }
+// 　　　　　　　　　	console.log(x,y);
+        }; 
+		
+
+	</script>
+</body>
+</html>
